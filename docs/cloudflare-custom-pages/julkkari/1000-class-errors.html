@@ -2,11 +2,11 @@
 <html>
  <head>
     <meta charset="utf-8">
-    <title>Error</title>
+    <title>5XX Level Errors page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Anek Devanagari', sans-serif;
@@ -28,6 +28,9 @@
         h2 {
             font-size: 1.6rem;
         }
+        b {
+            font-weight: 800;
+        }
         .meitalogo {
             max-width: 170px;
             min-width: 110px;
@@ -43,6 +46,19 @@
         }
         footer .meitalogo {
             margin-top: 3em;
+        }
+        .info {
+            margin-top: 2em;
+        }
+        .en {
+            color: #808080;
+            display: block;
+            font-size: 0.8em;
+        }
+        .tokens {
+            border: 1px solid #808080;
+            border-radius: 1em;
+            padding: 1em 1em 0.7em 1em
         }
     </style>
 </head>
@@ -72,6 +88,16 @@
     </header>
 
     ::CLOUDFLARE_ERROR_500S_BOX::
+
+    <div class="info">
+        <p>
+            Helpottaaksesi vikaselvitystä ota alla näkyvät tiedot talteen ja lähetä tukipyyntösi mukana.
+            <span class="en">Help us to help you by providing information below with your support request</span>
+        </p>
+        <p class="tokens">
+            Ray ID <b>::RAY_ID::</b> Your IP <b>::CLIENT_IP::</b>
+        </p>
+    </div>
 
     <footer>
         <svg class="meitalogo" width="100%" height="100%" viewBox="0 0 315 97" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
