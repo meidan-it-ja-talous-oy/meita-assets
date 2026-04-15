@@ -71,7 +71,8 @@
     <script>
         async function checkSparepage() {
 
-            const hostname = (location.hostname != localhost) ? location.hostname : 'localhost_8080';
+            const hostname = (location.hostname != 'localhost') ? location.hostname : 'localhost_8080';
+            console.log(hostname);
 
             // Logo maybe
             const logoUrl = 'https://varasivustot.julkkari.fi/'+hostname+'/sitelogo.png';
