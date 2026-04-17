@@ -9,8 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Anek Devanagari', sans-serif;
-            font-size: 18px;
+            font-family: Arial, Helvetica, sans-serif;
+            /*font-family: 'Anek Devanagari', sans-serif;*/
+            font-size: 16px;
             line-height: 1.5em;
             padding: 0px;
             margin: 4em;
@@ -31,6 +32,12 @@
         b {
             font-weight: 800;
         }
+        #sitelogo {
+            max-width: 170px;
+            min-width: 110px;
+            width: 25vw;
+            display: inline-block;
+        }
         .meitalogo {
             max-width: 170px;
             min-width: 110px;
@@ -38,16 +45,17 @@
             display: inline-block;
         }
         header {
-            text-align: end;
+            text-align: start;
         }
-        header .meitalogo {
-            margin-left: auto;
+        header .meitalogo,
+        header .customlogo {
+            margin-right: auto;
             margin-bottom: 2em;
         }
         footer .meitalogo {
             margin-top: 3em;
         }
-        .info {
+        #cloudflarecontent, .info {
             margin-top: 2em;
         }
         .en {
@@ -69,9 +77,18 @@
         }
     </style>
     <script>
+        
         async function checkSparepage() {
 
-            const hostname = (location.hostname != 'localhost') ? location.hostname : 'localhost_8080';
+            const userLang = navigator.language || navigator.userLanguage;
+            if (userLang == 'en-GB' || userLang == 'en-US') {
+                document.getElementById('statusinfo').innerText = 'There was a problem. Checking spare site status ...';
+            } else {
+                document.getElementById('statusinfo').innerText = 'Häiriö sivulla. Tarkistetaan varasivustoa ...';
+            }
+
+            //const hostname = (location.hostname != 'localhost') ? location.hostname : 'localhost_8080';
+            const hostname = 'ekhvadevi.meitadev.fi';
             console.log(hostname);
 
             // Logo maybe
@@ -79,82 +96,80 @@
             const logoRes = await fetch(logoUrl, { method: 'HEAD' });
             if (logoRes.ok) {
                 // Custom logo file found load it
-                //document.getElementById('customLogo').src = logoUrl;
-                //document.getElementById('customLogo').style.display = 'block';
+                document.getElementById('customlogo').src = logoUrl;
+                document.getElementById('meitalogo').style.display = 'none';
+                document.getElementById('meitalogofooter').style.display = 'none';
                 console.log('Logo found');
             } else {
                 // Custom logo file not found show meita logo
-                //document.getElementById('meitaLogo').style.display = 'block';
+                document.getElementById('customlogo').style.display = 'none';
+                document.getElementById('meitalogo').style.display = 'block';
+                document.getElementById('meitalogofooter').style.display = 'block';
                 console.log('Logo not found');
             }
 
-            // info text
-            const userLang = navigator.language || navigator.userLanguage;
-            let localtext = "Sivusto on hetkellisesti pois käytöstä, olet varasivustolla. Sinut ohjataan automaattisesti sivustolle, kun tilanne on ohi.";
-            if (userLang == 'en-GB' || userLang == 'en-US') {
-                localtext = "Site is temporarely offline, you are at spare site. You will be automatically redirected when the site comes back online.";
-            }
-            document.getElementById('topBarContent').innerText = localtext;
-
             // Sparepage content maybe
             const sparePageUrl = 'https://varasivustot.julkkari.fi/'+hostname+'/index.html';
-            const response = await fetch(sparePageUrl);
+            const response = await fetch(sparePageUrl, { method: 'HEAD'});
             if (response.status === 200) {
                 // Spare page found show load it into iframe
                 const html = await response.text();
                 console.log('Spare page found');
-                //document.getElementById('iframeContent').srcdoc = html;
-                //document.getElementById('iframeContent').style.display = 'block';
+                window.location.replace(sparePageUrl + '?origin=' + encodeURI(location.href));
             } else {
                 // Spare page not found show standard
-                //document.getElementById('htmlContent').style.display = 'block';
                 console.log('Spare page not found');
+                if (userLang == 'en-GB' || userLang == 'en-US') {
+                    document.getElementById('statusinfo').innerText = "Site is unavailable.";
+                } else {
+                    document.getElementById('statusinfo').innerText = "Sivusto on pois käytöstä.";
+                }
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('cloudflarecontent').style.display = 'block';
             }
         }
-        checkSparepage();
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSparepage();
+        }, false);
     </script>
 </head>
 <body>
 
     <header>
-        <svg class="meitalogo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="142.463" height="25.575" viewBox="0 0 142.463 25.575">
-            <defs>
-            <clipPath id="clip-path">
-                <path id="Path_757" data-name="Path 757" d="M0-24.444H142.463V-50.019H0Z" transform="translate(0 50.019)" fill="none"/>
-            </clipPath>
-            </defs>
-            <g id="Group_3783" data-name="Group 3783" transform="translate(0 50.019)">
-            <g id="Group_3782" data-name="Group 3782" transform="translate(0 -50.019)" clip-path="url(#clip-path)">
-                <g id="Group_3779" data-name="Group 3779" transform="translate(126.202)">
-                <path id="Path_754" data-name="Path 754" d="M-7.772,0A8.139,8.139,0,0,0-15.9,8.128a8.112,8.112,0,0,0,5.018,7.509l.142.059.516-1.241-.142-.058a6.772,6.772,0,0,1-4.192-6.27A6.8,6.8,0,0,1-7.772,1.342,6.8,6.8,0,0,1-.984,8.128v.153H.358V8.128A8.138,8.138,0,0,0-7.772,0" transform="translate(15.904)" fill="#181818"/>
+        <div id="sitelogo">
+            <svg id="meitalogo" style="display:none;" class="meitalogo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="142.463" height="25.575" viewBox="0 0 142.463 25.575">
+                <defs>
+                <clipPath id="clip-path">
+                    <path id="Path_757" data-name="Path 757" d="M0-24.444H142.463V-50.019H0Z" transform="translate(0 50.019)" fill="none"/>
+                </clipPath>
+                </defs>
+                <g id="Group_3783" data-name="Group 3783" transform="translate(0 50.019)">
+                <g id="Group_3782" data-name="Group 3782" transform="translate(0 -50.019)" clip-path="url(#clip-path)">
+                    <g id="Group_3779" data-name="Group 3779" transform="translate(126.202)">
+                    <path id="Path_754" data-name="Path 754" d="M-7.772,0A8.139,8.139,0,0,0-15.9,8.128a8.112,8.112,0,0,0,5.018,7.509l.142.059.516-1.241-.142-.058a6.772,6.772,0,0,1-4.192-6.27A6.8,6.8,0,0,1-7.772,1.342,6.8,6.8,0,0,1-.984,8.128v.153H.358V8.128A8.138,8.138,0,0,0-7.772,0" transform="translate(15.904)" fill="#181818"/>
+                    </g>
+                    <g id="Group_3780" data-name="Group 3780" transform="translate(130.75 5.082)">
+                    <path id="Path_755" data-name="Path 755" d="M-5.158-.346c-.458,1.08-1.783,4.4-1.823,4.509C-7.03,4.056-8.325.743-8.776-.34a.592.592,0,0,0-.548-.367h-1.232v6.1h1.214L-9.333.666l1.79,4.725h1.055L-4.61.666V4.48a7.2,7.2,0,0,1-.017.911h1.238v-6.1H-4.612a.592.592,0,0,0-.547.361" transform="translate(10.555 0.707)" fill="#181818"/>
+                    </g>
+                    <g id="Group_3781" data-name="Group 3781" transform="translate(0 0)">
+                    <path id="Path_756" data-name="Path 756" d="M-10.035-22.478a8.7,8.7,0,0,0,1.716-5.84V-44.426h-4.853v15.813a4.657,4.657,0,0,1-.784,2.961,3.64,3.64,0,0,1-2.943.968,9.184,9.184,0,0,1-1.854-.184,11.934,11.934,0,0,1-1.78-.517l.35,4.152a9.718,9.718,0,0,0,2.067.554,14.383,14.383,0,0,0,2.288.185q4.078,0,5.794-1.984m5.7-4.9a10.35,10.35,0,0,0,.618,3.82A4.673,4.673,0,0,0-1.8-21.214a6.393,6.393,0,0,0,3.367.794,6.864,6.864,0,0,0,2.98-.572,4.821,4.821,0,0,0,1.882-1.541,6.289,6.289,0,0,0,.987-2.15h.886l-.738-2.565a4.32,4.32,0,0,1-.756,1.467A3.722,3.722,0,0,1,5.5-24.738a4.251,4.251,0,0,1-1.882.388,3.522,3.522,0,0,1-1.91-.452A2.484,2.484,0,0,1,.695-26.094a5.774,5.774,0,0,1-.3-1.965V-38.946H-4.334ZM7.457-25.624l.185.388-.166,4.392h4.705v-18.1H7.457ZM21.093-45.238H16.351v24.393h4.742ZM34.8-30.994v.96l7.344-8.912H36.685L30.965-31.9H29.341v3.082h1.6l5.942,7.971h5.536ZM29.968-45.238H25.263v24.393h4.705ZM54.232-30.994v.96l7.344-8.912H56.115L50.394-31.9H48.77v3.082h1.605l5.942,7.971h5.535ZM49.4-45.238H44.692v24.393H49.4ZM78.774-32.027a10.45,10.45,0,0,0-.406-3,5.8,5.8,0,0,0-1.32-2.334,5.889,5.889,0,0,0-2.445-1.5,11.631,11.631,0,0,0-3.746-.526,15.3,15.3,0,0,0-2.786.24,14.775,14.775,0,0,0-2.334.618,15.19,15.19,0,0,0-1.854.8l-.406,3.764A22.172,22.172,0,0,1,66.494-35.1a12.139,12.139,0,0,1,3.5-.489,4.841,4.841,0,0,1,3.165.83,3.245,3.245,0,0,1,.968,2.6l.018.811v5.665l.129.406-.166,4.428h4.669ZM71.282-20.983A4.539,4.539,0,0,0,73.118-22.5a6.519,6.519,0,0,0,.951-2.113h.812l-.664-2.343a3.8,3.8,0,0,1-.8,1.43,4.121,4.121,0,0,1-1.43,1.024,5.082,5.082,0,0,1-2.085.388,2.967,2.967,0,0,1-2-.563,1.994,1.994,0,0,1-.637-1.577v-.185A1.909,1.909,0,0,1,67.914-28a4.483,4.483,0,0,1,2.205-.738l4.724-.683-.277-3.045-5.129.7a10.878,10.878,0,0,0-5.148,1.744,4.637,4.637,0,0,0-1.624,3.9v.517a5.053,5.053,0,0,0,1.412,3.838,5.722,5.722,0,0,0,4.106,1.347,7.255,7.255,0,0,0,3.1-.563M89.189-33.706a5.889,5.889,0,0,1,3.2-.83,9.42,9.42,0,0,1,1.125.064,5.221,5.221,0,0,1,.941.194L94.2-39a6,6,0,0,0-.7-.157,5.311,5.311,0,0,0-.867-.064A5.04,5.04,0,0,0,89-37.968a6.685,6.685,0,0,0-1.808,3.45H86.043l1.2,3.155a4.913,4.913,0,0,1,1.947-2.343m-1.818.48-.424-.166.2-5.554h-4.5v18.1h4.724Zm14.337-5.72H96.985v18.1h4.724Zm-.388-2.768a2.356,2.356,0,0,0,.646-1.772v-.092a2.4,2.4,0,0,0-.646-1.772,2.689,2.689,0,0,0-1.975-.646,2.681,2.681,0,0,0-1.983.646,2.415,2.415,0,0,0-.637,1.772v.092a2.382,2.382,0,0,0,.637,1.762,2.706,2.706,0,0,0,1.983.637,2.738,2.738,0,0,0,1.975-.627" transform="translate(20.534 45.995)" fill="#181818"/>
+                    </g>
                 </g>
-                <g id="Group_3780" data-name="Group 3780" transform="translate(130.75 5.082)">
-                <path id="Path_755" data-name="Path 755" d="M-5.158-.346c-.458,1.08-1.783,4.4-1.823,4.509C-7.03,4.056-8.325.743-8.776-.34a.592.592,0,0,0-.548-.367h-1.232v6.1h1.214L-9.333.666l1.79,4.725h1.055L-4.61.666V4.48a7.2,7.2,0,0,1-.017.911h1.238v-6.1H-4.612a.592.592,0,0,0-.547.361" transform="translate(10.555 0.707)" fill="#181818"/>
                 </g>
-                <g id="Group_3781" data-name="Group 3781" transform="translate(0 0)">
-                <path id="Path_756" data-name="Path 756" d="M-10.035-22.478a8.7,8.7,0,0,0,1.716-5.84V-44.426h-4.853v15.813a4.657,4.657,0,0,1-.784,2.961,3.64,3.64,0,0,1-2.943.968,9.184,9.184,0,0,1-1.854-.184,11.934,11.934,0,0,1-1.78-.517l.35,4.152a9.718,9.718,0,0,0,2.067.554,14.383,14.383,0,0,0,2.288.185q4.078,0,5.794-1.984m5.7-4.9a10.35,10.35,0,0,0,.618,3.82A4.673,4.673,0,0,0-1.8-21.214a6.393,6.393,0,0,0,3.367.794,6.864,6.864,0,0,0,2.98-.572,4.821,4.821,0,0,0,1.882-1.541,6.289,6.289,0,0,0,.987-2.15h.886l-.738-2.565a4.32,4.32,0,0,1-.756,1.467A3.722,3.722,0,0,1,5.5-24.738a4.251,4.251,0,0,1-1.882.388,3.522,3.522,0,0,1-1.91-.452A2.484,2.484,0,0,1,.695-26.094a5.774,5.774,0,0,1-.3-1.965V-38.946H-4.334ZM7.457-25.624l.185.388-.166,4.392h4.705v-18.1H7.457ZM21.093-45.238H16.351v24.393h4.742ZM34.8-30.994v.96l7.344-8.912H36.685L30.965-31.9H29.341v3.082h1.6l5.942,7.971h5.536ZM29.968-45.238H25.263v24.393h4.705ZM54.232-30.994v.96l7.344-8.912H56.115L50.394-31.9H48.77v3.082h1.605l5.942,7.971h5.535ZM49.4-45.238H44.692v24.393H49.4ZM78.774-32.027a10.45,10.45,0,0,0-.406-3,5.8,5.8,0,0,0-1.32-2.334,5.889,5.889,0,0,0-2.445-1.5,11.631,11.631,0,0,0-3.746-.526,15.3,15.3,0,0,0-2.786.24,14.775,14.775,0,0,0-2.334.618,15.19,15.19,0,0,0-1.854.8l-.406,3.764A22.172,22.172,0,0,1,66.494-35.1a12.139,12.139,0,0,1,3.5-.489,4.841,4.841,0,0,1,3.165.83,3.245,3.245,0,0,1,.968,2.6l.018.811v5.665l.129.406-.166,4.428h4.669ZM71.282-20.983A4.539,4.539,0,0,0,73.118-22.5a6.519,6.519,0,0,0,.951-2.113h.812l-.664-2.343a3.8,3.8,0,0,1-.8,1.43,4.121,4.121,0,0,1-1.43,1.024,5.082,5.082,0,0,1-2.085.388,2.967,2.967,0,0,1-2-.563,1.994,1.994,0,0,1-.637-1.577v-.185A1.909,1.909,0,0,1,67.914-28a4.483,4.483,0,0,1,2.205-.738l4.724-.683-.277-3.045-5.129.7a10.878,10.878,0,0,0-5.148,1.744,4.637,4.637,0,0,0-1.624,3.9v.517a5.053,5.053,0,0,0,1.412,3.838,5.722,5.722,0,0,0,4.106,1.347,7.255,7.255,0,0,0,3.1-.563M89.189-33.706a5.889,5.889,0,0,1,3.2-.83,9.42,9.42,0,0,1,1.125.064,5.221,5.221,0,0,1,.941.194L94.2-39a6,6,0,0,0-.7-.157,5.311,5.311,0,0,0-.867-.064A5.04,5.04,0,0,0,89-37.968a6.685,6.685,0,0,0-1.808,3.45H86.043l1.2,3.155a4.913,4.913,0,0,1,1.947-2.343m-1.818.48-.424-.166.2-5.554h-4.5v18.1h4.724Zm14.337-5.72H96.985v18.1h4.724Zm-.388-2.768a2.356,2.356,0,0,0,.646-1.772v-.092a2.4,2.4,0,0,0-.646-1.772,2.689,2.689,0,0,0-1.975-.646,2.681,2.681,0,0,0-1.983.646,2.415,2.415,0,0,0-.637,1.772v.092a2.382,2.382,0,0,0,.637,1.762,2.706,2.706,0,0,0,1.983.637,2.738,2.738,0,0,0,1.975-.627" transform="translate(20.534 45.995)" fill="#181818"/>
-                </g>
-            </g>
-            </g>
-        </svg>
+            </svg>
+            <img id="customlogo" style="max-height: 100px;max-width: 150px;">
+        </div>
     </header>
 
-    ::CLOUDFLARE_ERROR_500S_BOX::
-
-    <div class="info">
-        <p>
-            Helpottaaksesi vikaselvitystä ota yllä näkyvät tiedot talteen ja lähetä tukipyyntösi mukana.
-            <span class="en">Help us to help you by providing bove information with your support request</span>
-        </p>
-        <!--
-        <p class="tokens">
-            Ray ID <b>::RAY_ID::</b> Your IP <b>::CLIENT_IP::</b>
-        </p>
-        -->
+    <div id="sparepageinfo">
+        <svg id="loading" style="display:inline-block;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9.5" fill="none" stroke-linecap="round" stroke-width="3"><animate attributeName="stroke-dasharray" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0 150;42 150;42 150;42 150"/><animate attributeName="stroke-dashoffset" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0;-16;-59;-59"/></circle><animateTransform attributeName="transform" dur="2s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></g></svg>
+        <div id="statusinfo" style="display:inline-block;height: 24px;vertical-align: text-bottom;">Sivustolla on häiriö, tarkistetaan varasivustoa ...</div>
     </div>
 
+    <div id="cloudflarecontent" style="display:none;">::CLOUDFLARE_ERROR_500S_BOX::</div>
+
     <footer>
-        <svg class="meitalogo" width="100%" height="100%" viewBox="0 0 315 97" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+        <svg id="meitalogofooter" style="display:none;" class="meitalogo" width="100%" height="100%" viewBox="0 0 315 97" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
             <g transform="matrix(1,0,0,1,-93,-90)">
                 <path d="M254.16,157.23C254.16,157.23 254.27,157.23 254.27,151.24L254.27,126.13L241.9,157.24L234.96,157.24L223.18,126.13L223.13,157.24L215.13,157.24L215.13,117.09L223.24,117.09C224.82,117.09 226.25,118.04 226.85,119.5C229.81,126.63 238.35,148.44 238.66,149.15C238.92,148.44 247.65,126.58 250.66,119.47C251.27,118.02 252.69,117.09 254.26,117.09L262.31,117.09L262.31,157.24L254.16,157.24L254.16,157.23Z" style="fill:rgb(25,25,25);fill-rule:nonzero;"/>
                 <path d="M277.59,156.98C275.75,156.98 274.47,155.58 274.48,153.85L274.58,119.8C274.58,118.07 275.98,116.68 277.71,116.68L300.06,116.68C301.78,116.68 303.17,118.06 303.19,119.78C303.21,121.71 303.21,122.59 303.15,122.73L283.29,122.73L283.29,134.42L297.34,134.42L297.34,139.91L283.29,140.08L283.29,151.17L303.15,151.17L303.15,153.83C303.15,155.56 301.75,156.96 300.02,156.96L277.6,156.96L277.59,156.98Z" style="fill:rgb(25,25,25);fill-rule:nonzero;"/>
