@@ -114,20 +114,20 @@
                 // Spare page found show load it into iframe
                 const html = await response.text();
                 console.log('Spare page found');
-                document.getElementById('statusinfo').innerText = 'Spare site';
-                /*
                 // Do not automatically redirect just offer link to spare page
-                setTimeout(function() {
-                    window.location.replace(sparePageUrl + '?origin=' + encodeURI(location.href))
-                }, 5000);
-                */
+                const sparePageUrl = sparePageUrl + '?origin=' + encodeURI(location.href);
+                if (userLang == 'en-GB' || userLang == 'en-US') {
+                    document.getElementById('statusinfo').innerText = "Site has active security check. Follow the instructions below and you will be able to access the site normally. <a href="'+sparePageUrl+'">Spare site is also available here</a>.";
+                } else {
+                    document.getElementById('statusinfo').innerText = "Sivustolla on aktiivinen tietoturvatarkastus. Seuraa ohjeita alta ja pääset käyttämään sivutoa normaalisti. <a href="'+sparePageUrl+'">Varasivusto on myös saatavilla tästä linkistä</a>.";
+                }
             } else {
                 // Spare page not found show standard
                 console.log('Spare page not found');
                 if (userLang == 'en-GB' || userLang == 'en-US') {
-                    document.getElementById('statusinfo').innerText = "Site is unavailable.";
+                    document.getElementById('statusinfo').innerText = "Site has active security check. Follow the instructions below and you will be able to access the site normally.";
                 } else {
-                    document.getElementById('statusinfo').innerText = "Sivusto on pois käytöstä.";
+                    document.getElementById('statusinfo').innerText = "Sivustolla on aktiivinen tietoturvatarkastus. Seuraa ohjeita ja pääset sivutolle normaalisti.";
                 }
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('cloudflarecontent').style.display = 'block';
