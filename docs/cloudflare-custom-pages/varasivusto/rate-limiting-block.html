@@ -2,7 +2,7 @@
 <html>
  <head>
     <meta charset="utf-8">
-    <title>Error</title>
+    <title>You are being rate limited.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,9 +82,9 @@
 
             const userLang = navigator.language || navigator.userLanguage;
             if (userLang == 'en-GB' || userLang == 'en-US') {
-                document.getElementById('statusinfo').innerText = 'Site is unavailable. Checking spare site status ...';
+                document.getElementById('statusinfo').innerText = 'You are being rate limited. Checking spare site status ...';
             } else {
-                document.getElementById('statusinfo').innerText = 'Sivusto on hetkellisesti pois käytöstä. Tarkistetaan varasivustoa ...';
+                document.getElementById('statusinfo').innerText = 'Liikennettä sivustolle on rajoitetu. Tarkistetaan varasivustoa ...';
             }
 
             const hostname = (location.hostname != 'localhost' && location.hostname != '') ? location.hostname : 'localhost_8080';
@@ -114,17 +114,20 @@
                 // Spare page found show load it into iframe
                 const html = await response.text();
                 console.log('Spare page found');
-                document.getElementById('statusinfo').innerText = 'Spare site';
-                setTimeout(function() {
-                    window.location.replace(sparePageUrl + '?origin=' + encodeURI(location.href))
-                }, 5000);
+                // Do not automatically redirect just offer link to spare page
+                const sparePageUrl = sparePageUrl + '?origin=' + encodeURI(location.href);
+                if (userLang == 'en-GB' || userLang == 'en-US') {
+                    document.getElementById('statusinfo').innerText = 'You are being rate limited. <a href="'+sparePageUrl+'">Spare site is available here</a>.';
+                } else {
+                    document.getElementById('statusinfo').innerText = 'Liikennettä sivustolle on rajoitetu. <a href="'+sparePageUrl+'">Varasivusto on saatavilla tästä linkistä</a>.';
+                }
             } else {
                 // Spare page not found show standard
                 console.log('Spare page not found');
                 if (userLang == 'en-GB' || userLang == 'en-US') {
-                    document.getElementById('statusinfo').innerText = "Site is unavailable.";
+                    document.getElementById('statusinfo').innerText = "You are being rate limited.";
                 } else {
-                    document.getElementById('statusinfo').innerText = "Sivusto on pois käytöstä.";
+                    document.getElementById('statusinfo').innerText = "Liikennettä sivustolle on rajoitetu.";
                 }
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('cloudflarecontent').style.display = 'block';
@@ -165,10 +168,10 @@
 
     <div id="sparepageinfo">
         <svg id="loading" style="display:inline-block;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9.5" fill="none" stroke-linecap="round" stroke-width="3"><animate attributeName="stroke-dasharray" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0 150;42 150;42 150;42 150"/><animate attributeName="stroke-dashoffset" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0;-16;-59;-59"/></circle><animateTransform attributeName="transform" dur="2s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></g></svg>
-        <div id="statusinfo" style="display:inline-block;height: 24px;vertical-align: text-bottom;">Sivustolla on häiriö, tarkistetaan varasivustoa ...</div>
+        <div id="statusinfo" style="display:inline-block;height: 24px;vertical-align: text-bottom;">Liikennettä sivustolle on rajoitettu, tarkistetaan varasivustoa ...</div>
     </div>
 
-    <div id="cloudflarecontent" style="display:none;">::CLOUDFLARE_ERROR_1000S_BOX::<hr>::CLIENT_IP::<br>::RAY_ID::<br>::GEO::</div>
+    <div id="cloudflarecontent" style="display:none;">::CAPTCHA_BOX::<hr>::CLIENT_IP::<br>::RAY_ID::<br>::GEO::</div>
 
     <footer>
         <svg id="meitalogofooter" style="display:none;" class="meitalogo" width="100%" height="100%" viewBox="0 0 315 97" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
