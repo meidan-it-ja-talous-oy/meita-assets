@@ -75,6 +75,22 @@
             border-radius: 1em;
             padding: 1em 1em 0.7em 1em
         }
+        .sparepage-button {
+            display: inline-block;
+            padding: 0.05em 0.4em 0.1em 0.4em;
+            font-size: 0.85em;
+            background-color: #e7e7e7;
+            border-radius: 3px;
+        }
+        #cloudflare-extra-info {
+            font-size: 0.85em;
+            display: block;
+            margin-top: 5em;
+        }
+        #cloudflare-extra-info-header {
+            color: #808080;
+            margin-bottom: 0em;
+        }
     </style>
     <script>
         
@@ -83,8 +99,10 @@
             const userLang = navigator.language || navigator.userLanguage;
             if (userLang == 'en-GB' || userLang == 'en-US') {
                 document.getElementById('statusinfo').innerText = 'You are being rate limited. Checking spare site status ...';
+                document.getElementById('cloudflare-extra-info-header').innerText = 'If you decide to send support request, please include these details below:';
             } else {
                 document.getElementById('statusinfo').innerText = 'Liikennettä sivustolle on rajoitetu. Tarkistetaan varasivustoa ...';
+                document.getElementById('cloudflare-extra-info-header').innerText = 'Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:';
             }
 
             const hostname = (location.hostname != 'localhost' && location.hostname != '') ? location.hostname : 'localhost_8080';
@@ -115,11 +133,10 @@
                 const html = await response.text();
                 console.log('Spare page found');
                 // Do not automatically redirect just offer link to spare page
-                const sparePageUrl = sparePageUrl + '?origin=' + encodeURI(location.href);
                 if (userLang == 'en-GB' || userLang == 'en-US') {
-                    document.getElementById('statusinfo').innerText = 'You are being rate limited. <a href="'+sparePageUrl+'">Spare site is available here</a>.';
+                    document.getElementById('statusinfo').innerHTML = 'You are being rate limited. <a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare site is available here</a>';
                 } else {
-                    document.getElementById('statusinfo').innerText = 'Liikennettä sivustolle on rajoitetu. <a href="'+sparePageUrl+'">Varasivusto on saatavilla tästä linkistä</a>.';
+                    document.getElementById('statusinfo').innerHTML = 'Liikennettä sivustolle on rajoitetu. <a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivusto on saatavilla tästä linkistä</a>.';
                 }
             } else {
                 // Spare page not found show standard
@@ -171,7 +188,15 @@
         <div id="statusinfo" style="display:inline-block;height: 24px;vertical-align: text-bottom;">Liikennettä sivustolle on rajoitettu, tarkistetaan varasivustoa ...</div>
     </div>
 
-    <div id="cloudflarecontent" style="display:none;">::CAPTCHA_BOX::<hr>::CLIENT_IP::<br>::RAY_ID::<br>::GEO::</div>
+    <div id="cloudflarecontent" style="display:block;">
+        ::CAPTCHA_BOX::
+        <span id="cloudflare-extra-info">
+            <h4 id="cloudflare-extra-info-header">Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:</h4>
+            ::CLIENT_IP::<br>
+            ::RAY_ID::<br>
+            ::GEO::
+        </span>
+    </div>
 
     <footer>
         <svg id="meitalogofooter" style="display:none;" class="meitalogo" width="100%" height="100%" viewBox="0 0 315 97" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">

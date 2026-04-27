@@ -75,6 +75,22 @@
             border-radius: 1em;
             padding: 1em 1em 0.7em 1em
         }
+        .sparepage-button {
+            display: inline-block;
+            padding: 0.05em 0.4em 0.1em 0.4em;
+            font-size: 0.85em;
+            background-color: #e7e7e7;
+            border-radius: 3px;
+        }
+        #cloudflare-extra-info {
+            font-size: 0.85em;
+            display: block;
+            margin-top: 5em;
+        }
+        #cloudflare-extra-info-header {
+            color: #808080;
+            margin-bottom: 0em;
+        }
     </style>
     <script>
         
@@ -115,11 +131,10 @@
                 const html = await response.text();
                 console.log('Spare page found');
                 // Do not automatically redirect just offer link to spare page
-                const sparePageUrl = sparePageUrl + '?origin=' + encodeURI(location.href);
                 if (userLang == 'en-GB' || userLang == 'en-US') {
-                    document.getElementById('statusinfo').innerText = 'Site has active security check. Follow the instructions below and you can maybe access the site normally. <a href="'+sparePageUrl+'">Spare site is also available here</a>.';
+                    document.getElementById('statusinfo').innerHTML = 'Site has active security check. Follow the instructions below and you can maybe access the site normally. <a href="'+sparePageUrl + '?origin=' + encodeURI(location.href)+'">Spare site is also available here</a>.';
                 } else {
-                    document.getElementById('statusinfo').innerText = 'Sivustolle pääsyä on rajoitettu IPn tai Lähdemaan perusteella. Seuraa ohjeita ja pääset mahdollisesti sivutolle normaalisti. <a href="'+sparePageUrl+'">Varasivusto on myös saatavilla tästä linkistä</a>.';
+                    document.getElementById('statusinfo').innerHTML = 'Sivustolle pääsyä on rajoitettu IPn tai Lähdemaan perusteella. Seuraa ohjeita ja pääset mahdollisesti sivutolle normaalisti. <a href="'+sparePageUrl + '?origin=' + encodeURI(location.href)+'">Varasivusto on myös saatavilla tästä linkistä</a>.';
                 }
             } else {
                 // Spare page not found show standard
@@ -171,7 +186,15 @@
         <div id="statusinfo" style="display:inline-block;height: 24px;vertical-align: text-bottom;">Sivustolle pääsyä on rajoitettu IPn tai Lähdemaan perusteella. Seuraa ohjeita ja pääset mahdollisesti sivutolle normaalisti., tarkistetaan varasivustoa ...</div>
     </div>
 
-    <div id="cloudflarecontent" style="display:none;">::CAPTCHA_BOX::<hr>::CLIENT_IP::<br>::RAY_ID::<br>::GEO::</div>
+    <div id="cloudflarecontent" style="display:none;">
+        ::CAPTCHA_BOX::
+        <span id="cloudflare-extra-info">
+            <h4 id="cloudflare-extra-info-header">Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:</h4>
+            ::CLIENT_IP::<br>
+            ::RAY_ID::<br>
+            ::GEO::
+        </span>
+    </div>
 
     <footer>
         <svg id="meitalogofooter" style="display:none;" class="meitalogo" width="100%" height="100%" viewBox="0 0 315 97" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
