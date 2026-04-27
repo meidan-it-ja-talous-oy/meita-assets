@@ -117,9 +117,9 @@
                 // Do not automatically redirect just offer link to spare page
                 const sparePageUrl = sparePageUrl + '?origin=' + encodeURI(location.href);
                 if (userLang == 'en-GB' || userLang == 'en-US') {
-                    document.getElementById('statusinfo').innerText = "Site has active security check. Follow the instructions below and you will be able to access the site normally. <a href="'+sparePageUrl+'">Spare site is also available here</a>.";
+                    document.getElementById('statusinfo').innerText = 'Site has active security check. Follow the instructions below and you will be able to access the site normally. <a href="'+sparePageUrl+'">Spare site is also available here</a>.';
                 } else {
-                    document.getElementById('statusinfo').innerText = "Sivustolla on aktiivinen tietoturvatarkastus. Seuraa ohjeita alta ja pääset käyttämään sivutoa normaalisti. <a href="'+sparePageUrl+'">Varasivusto on myös saatavilla tästä linkistä</a>.";
+                    document.getElementById('statusinfo').innerText = 'Sivustolla on aktiivinen tietoturvatarkastus. Seuraa ohjeita alta ja pääset käyttämään sivutoa normaalisti. <a href="'+sparePageUrl+'">Varasivusto on myös saatavilla tästä linkistä</a>.';
                 }
             } else {
                 // Spare page not found show standard
