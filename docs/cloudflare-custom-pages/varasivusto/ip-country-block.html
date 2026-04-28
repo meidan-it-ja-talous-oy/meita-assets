@@ -2,15 +2,11 @@
 <html>
  <head>
     <meta charset="utf-8">
-    <title>Site has IP/County restrictions.</title>
+    <title>Sorry, you have been blocked accessing from Country/IP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
-            /*font-family: 'Anek Devanagari', sans-serif;*/
             font-size: 16px;
             line-height: 1.5em;
             padding: 0px;
@@ -49,8 +45,10 @@
         }
         header .meitalogo,
         header .customlogo {
+            min-height: 100px;
             margin-right: auto;
             margin-bottom: 2em;
+            transition: all 0.15s ease-out;
         }
         footer .meitalogo {
             margin-top: 3em;
@@ -58,38 +56,38 @@
         #cloudflarecontent, .info {
             margin-top: 2em;
         }
-        .en {
-            color: #808080;
-            display: block;
-            font-size: 0.8em;
-        }
-        /*
-        .cf-error-details ul {
-            border: 1px solid #808080;
-            border-radius: 1em;
-            padding: 1em 1em 0.7em 2em; 
-        }
-        */
-        .tokens {
-            border: 1px solid #808080;
-            border-radius: 1em;
-            padding: 1em 1em 0.7em 1em
-        }
         .sparepage-button {
             display: inline-block;
-            padding: 0.05em 0.4em 0.1em 0.4em;
-            font-size: 0.85em;
-            background-color: #e7e7e7;
+            padding: 0.4em 1em 0.4em 1em;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            color: #000;
             border-radius: 3px;
+            margin-top: 1em;
+            text-decoration: none;
+        }
+        #sparepage-check {
+            display: grid;
+            grid-auto-flow: column dense;
+            align-content: start;
+            align-items: start;
+            justify-content: start;
+            gap: 0.5em;
+            margin-top: 1em;
+        }
+        #sparepageinfo {
+            max-width: 35em;
         }
         #cloudflare-extra-info {
             font-size: 0.85em;
             display: block;
-            margin-top: 5em;
+            margin-top: 4em;
+            line-height: 1.3em;
         }
         #cloudflare-extra-info-header {
             color: #808080;
-            margin-bottom: 0em;
+            margin-bottom: 0.5em;
+            line-height: 1.3em;
         }
     </style>
     <script>
@@ -97,10 +95,16 @@
         async function checkSparepage() {
 
             const userLang = navigator.language || navigator.userLanguage;
-            if (userLang == 'en-GB' || userLang == 'en-US') {
-                document.getElementById('statusinfo').innerText = 'Site has IP/County restrictions. Checking spare site status ...';
+            if (userLang == 'fi-FI') {
+                document.getElementById('statusinfo-header').innerHTML = 'Valitettavasti pääsysi maasta/IP-osoitteesta on estetty.';
+                document.getElementById('statusinfo').innerHTML = 'Tälle verkkosivustolle on rajoitettu pääsy IP-osoitteen tai maan perustella.';
+                document.getElementById('cloudflare-extra-info-header').innerText = 'Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:';
+                document.getElementById('sparepage-check-label').innerText = 'Etsitään varasivustoa ...';
             } else {
-                document.getElementById('statusinfo').innerText = 'Sivustolle pääsyä on rajoitettu IPn tai Lähdemaan perusteella. Tarkistetaan varasivustoa ...';
+                document.getElementById('statusinfo-header').innerHTML = 'Sorry, you have been blocked accessing from Country/IP';
+                document.getElementById('statusinfo').innerHTML = 'This website has access restriction besed on IP or Country.';
+                document.getElementById('cloudflare-extra-info-header').innerText = 'If you decide to send support request, please include these details below:';
+                document.getElementById('sparepage-check-label').innerText = 'Searching for spare site ...';
             }
 
             const hostname = (location.hostname != 'localhost' && location.hostname != '') ? location.hostname : 'localhost_8080';
@@ -127,24 +131,20 @@
             const sparePageUrl = 'https://varasivustot.julkkari.fi/'+hostname+'/index.html';
             const response = await fetch(sparePageUrl, { method: 'HEAD'});
             if (response.status === 200) {
-                // Spare page found show load it into iframe
-                const html = await response.text();
+                // Spare page found 
                 console.log('Spare page found');
+                const html = await response.text();
+                document.getElementById('loading').style.display = 'none';
                 // Do not automatically redirect just offer link to spare page
-                if (userLang == 'en-GB' || userLang == 'en-US') {
-                    document.getElementById('statusinfo').innerHTML = 'Site has IP/County restrictions. <a href="'+sparePageUrl + '?origin=' + encodeURI(location.href)+'">Spare site is available here</a>.';
+                if (userLang == 'fi-FI') {
+                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivusto on saatavilla tästä linkistä</a>';
                 } else {
-                    document.getElementById('statusinfo').innerHTML = 'Sivustolle pääsyä on rajoitettu IPn tai Lähdemaan perusteella. <a href="'+sparePageUrl + '?origin=' + encodeURI(location.href)+'">Varasivusto on saatavilla tästä linkistä</a>.';
+                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare site is available here</a>';
                 }
             } else {
-                // Spare page not found show standard
+                // Spare page not found
                 console.log('Spare page not found');
-                if (userLang == 'en-GB' || userLang == 'en-US') {
-                    document.getElementById('statusinfo').innerText = "Site has IP/County restrictions.";
-                } else {
-                    document.getElementById('statusinfo').innerText = "Sivustolle pääsyä on rajoitettu IPn tai Lähdemaan perusteella.";
-                }
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('sparepage-check').style.display = 'none';
                 document.getElementById('cloudflarecontent').style.display = 'block';
             }
         }
@@ -182,12 +182,16 @@
     </header>
 
     <div id="sparepageinfo">
+        <h1 id="statusinfo-header">Valitettavasti pääsysi maasta/IP-osoitteesta on estetty.</h1>
+        <div id="statusinfo">Tälle verkkosivustolle on rajoitettu pääsy IP-osoitteen tai maan perustella.</div>
+        <div id="sparepage-check">
         <svg id="loading" style="display:inline-block;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9.5" fill="none" stroke-linecap="round" stroke-width="3"><animate attributeName="stroke-dasharray" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0 150;42 150;42 150;42 150"/><animate attributeName="stroke-dashoffset" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0;-16;-59;-59"/></circle><animateTransform attributeName="transform" dur="2s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></g></svg>
-        <div id="statusinfo" style="display:inline-block;height: 24px;vertical-align: text-bottom;">Sivustolle pääsyä on rajoitettu IPn tai Lähdemaan perusteella, tarkistetaan varasivustoa ...</div>
+            <span id="sparepage-check-label">Etsitään varasivustoa ...</span>
+        </div>
     </div>
 
     <div id="cloudflarecontent" style="display:none;">
-        ::CAPTCHA_BOX::
+
     </div>
     <div id="cloudflare-extra-info">
         <h4 id="cloudflare-extra-info-header">Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:</h4>
