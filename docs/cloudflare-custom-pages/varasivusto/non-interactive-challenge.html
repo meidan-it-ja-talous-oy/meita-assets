@@ -135,12 +135,16 @@
                 console.log('Spare page found');
                 const html = await response.text();
                 document.getElementById('loading').style.display = 'none';
+                document.getElementById('sparepage-check-label').innerHTML = '';
                 // Do not automatically redirect just offer link to spare page
-                if (userLang == 'fi-FI') {
-                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivusto on saatavilla tästä linkistä</a>';
-                } else {
-                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare site is available here</a>';
-                }
+                // Wait to show the link because this is the non interactive challenge
+                setTimeout(function() {
+                    if (userLang == 'fi-FI') {
+                        document.getElementById('sparepage-check-label').innerHTML = 'Jos tarkistus ei mene läpi, niin<br><a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivusto on saatavilla tästä linkistä</a>';
+                    } else {
+                        document.getElementById('sparepage-check-label').innerHTML = 'If the check was not successfull then <br><a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare site is available here</a>';
+                    }
+                }, 20000);
             } else {
                 // Spare page not found
                 console.log('Spare page not found');
