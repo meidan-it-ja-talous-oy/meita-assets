@@ -99,12 +99,12 @@
                 document.getElementById('statusinfo-header').innerHTML = 'Tietoturva tarkastus ennen kuin pääset sivustolle.';
                 document.getElementById('statusinfo').innerHTML = 'Tämä verkkosivusto käyttää tietoturvapalvelua suojautuakseen verkkohyökkäyksiltä. Suorita tarkastus alta ja pääset jatkamaan normaalisti eteenpäin.';
                 document.getElementById('cloudflare-extra-info-header').innerText = 'Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:';
-                document.getElementById('sparepage-check-label').innerText = 'Etsitään varasivustoa ...';
+                document.getElementById('sparepage-check-label').innerText = 'Etsitään varasivua ...';
             } else {
                 document.getElementById('statusinfo-header').innerHTML = 'Security check before you can enter the site.';
                 document.getElementById('statusinfo').innerHTML = 'This website is using a security service to protect itself from online attacks. If you pass security check below you can continue to site normally.';
                 document.getElementById('cloudflare-extra-info-header').innerText = 'If you decide to send support request, please include these details below:';
-                document.getElementById('sparepage-check-label').innerText = 'Searching for spare site ...';
+                document.getElementById('sparepage-check-label').innerText = 'Searching for spare page ...';
             }
 
             const hostname = (location.hostname != 'localhost' && location.hostname != '') ? location.hostname : 'localhost_8080';
@@ -112,8 +112,13 @@
 
             // Logo maybe
             const logoUrl = 'https://varasivustot.julkkari.fi/'+hostname+'/sitelogo.png';
-            const logoRes = await fetch(logoUrl, { method: 'HEAD' });
-            if (logoRes.ok) {
+            let logoRes = null;
+            try {
+                logoRes = await fetch(logoUrl, { method: 'HEAD' });
+            } catch (e) {
+                console.log('Logo fetch error', e);
+            }
+            if (logoRes && logoRes.ok) {
                 // Custom logo file found load it
                 document.getElementById('customlogo').src = logoUrl;
                 document.getElementById('meitalogo').style.display = 'none';
@@ -129,17 +134,22 @@
 
             // Sparepage content maybe
             const sparePageUrl = 'https://varasivustot.julkkari.fi/'+hostname+'/index.html';
-            const response = await fetch(sparePageUrl, { method: 'HEAD'});
-            if (response.status === 200) {
+            let response = null;
+            try {
+                response = await fetch(sparePageUrl, { method: 'HEAD'});
+            } catch (e) {
+                console.log('Spare page fetch error', e);
+            }
+            if (response && response.status === 200) {
                 // Spare page found
                 console.log('Spare page found');
                 const html = await response.text();
                 document.getElementById('loading').style.display = 'none';
                 // Do not automatically redirect just offer link to spare page
                 if (userLang == 'fi-FI') {
-                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivusto on saatavilla tästä linkistä</a>';
+                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivu on saatavilla tästä linkistä</a>';
                 } else {
-                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare site is available here</a>';
+                    document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare page is available here</a>';
                 }
             } else {
                 // Spare page not found
@@ -189,7 +199,7 @@
         </div>
         <div id="sparepage-check">
         <svg id="loading" style="display:inline-block;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9.5" fill="none" stroke-linecap="round" stroke-width="3"><animate attributeName="stroke-dasharray" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0 150;42 150;42 150;42 150"/><animate attributeName="stroke-dashoffset" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0;-16;-59;-59"/></circle><animateTransform attributeName="transform" dur="2s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></g></svg>
-            <span id="sparepage-check-label">Etsitään varasivustoa ...</span>
+            <span id="sparepage-check-label">Etsitään varasivua ...</span>
         </div>
     </div>
 
