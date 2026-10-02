@@ -111,7 +111,7 @@
         async function checkSparepage() {
 
             const userLang = navigator.language || navigator.userLanguage;
-            if (userLang == 'fi-FI') {
+            if (/^fi(-|$)/i.test(userLang || '')) {
                 document.getElementById('statusinfo-header').innerHTML = 'Pahoitelut, sivua ladattaessa tapahtui virhe.';
                 document.getElementById('statusinfo').innerHTML = 'Sivusto on hetkellisesti pois käytöstä.';
                 document.getElementById('cloudflare-extra-info-header').innerText = 'Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:';
@@ -161,7 +161,7 @@
                 console.log('Spare page found');
                 const html = await response.text();
                 // Offer link to spare page
-                if (userLang == 'fi-FI') {
+                if (/^fi(-|$)/i.test(userLang || '')) {
                     document.getElementById('sparepage-check-label').innerHTML = 'Uudelleenohjataan <br><a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">varasivulle</a>';
                 } else {
                     document.getElementById('sparepage-check-label').innerHTML = 'Redirecting to the <br><a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">spare page</a>';

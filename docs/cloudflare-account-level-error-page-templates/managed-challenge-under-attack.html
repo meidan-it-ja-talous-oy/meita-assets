@@ -117,7 +117,7 @@
         async function checkSparepage() {
 
             const userLang = navigator.language || navigator.userLanguage;
-            if (userLang == 'fi-FI') {
+            if (/^fi(-|$)/i.test(userLang || '')) {
                 document.getElementById('statusinfo-header').innerHTML = 'Tietoturva tarkastus ennen kuin pääset sivustolle.';
                 document.getElementById('statusinfo').innerHTML = 'Tämä verkkosivusto käyttää tietoturvapalvelua suojautuakseen verkkohyökkäyksiltä. Suorita tarkastus alta ja pääset jatkamaan normaalisti eteenpäin.';
                 document.getElementById('cloudflare-extra-info-header').innerText = 'Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:';
@@ -172,7 +172,7 @@
                 // this is a challenge page, so give the challenge time to resolve
                 // before tempting the visitor away to the spare page.
                 setTimeout(function() {
-                    if (userLang == 'fi-FI') {
+                    if (/^fi(-|$)/i.test(userLang || '')) {
                         document.getElementById('sparepage-check-label').innerHTML = 'Jos tarkistus ei mene läpi, niin<br><a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivu on saatavilla tästä linkistä</a>';
                     } else {
                         document.getElementById('sparepage-check-label').innerHTML = 'If the check was not successful then <br><a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare page is available here</a>';

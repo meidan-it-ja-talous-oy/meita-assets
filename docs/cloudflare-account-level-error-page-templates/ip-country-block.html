@@ -111,7 +111,7 @@
         async function checkSparepage() {
 
             const userLang = navigator.language || navigator.userLanguage;
-            if (userLang == 'fi-FI') {
+            if (/^fi(-|$)/i.test(userLang || '')) {
                 document.getElementById('statusinfo-header').innerHTML = 'Valitettavasti pääsysi maasta/IP-osoitteesta on estetty.';
                 document.getElementById('statusinfo').innerHTML = 'Tälle verkkosivustolle on rajoitettu pääsy IP-osoitteen tai maan perustella.';
                 document.getElementById('cloudflare-extra-info-header').innerText = 'Jos lähetät tukipyynnön, niin lisää siihen mukaan nämä tiedot:';
@@ -162,7 +162,7 @@
                 const html = await response.text();
                 document.getElementById('loading').style.display = 'none';
                 // Do not automatically redirect just offer link to spare page
-                if (userLang == 'fi-FI') {
+                if (/^fi(-|$)/i.test(userLang || '')) {
                     document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Varasivu on saatavilla tästä linkistä</a>';
                 } else {
                     document.getElementById('sparepage-check-label').innerHTML = '<a class="sparepage-button" href="'+ sparePageUrl + '?origin=' + encodeURI(location.href) +'">Spare page is available here</a>';
